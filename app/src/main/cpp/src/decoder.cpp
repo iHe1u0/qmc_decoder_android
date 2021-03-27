@@ -117,7 +117,7 @@ namespace {
         }
     }
 
-    static const std::regex qmc_regex{"^.+\\.(qmc3|qmc0|qmcflac|qmcogg)$"};
+    const std::regex qmc_regex{"^.+\\.(qmc3|qmc0|qmcflac|qmcogg)$"};
 }  // namespace
 
 int main_qmc_process(std::vector<std::string> qmc_paths, std::string file_path) {
@@ -125,6 +125,7 @@ int main_qmc_process(std::vector<std::string> qmc_paths, std::string file_path) 
     if (qmc_paths.empty()) {
         return -1;
     }
+    //sub_process(file_path);
     for (auto &p : fs::recursive_directory_iterator(fs::path("."))) {
         //auto file_path = p.path().string();
         if ((fs::status(p).permissions() & fs::perms::owner_read) !=
