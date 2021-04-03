@@ -21,8 +21,8 @@ public class Decoder extends Thread {
     }
 
 
-    public String getInput() {
-        return input;
+    public String getOutputPath() {
+        return output;
     }
 
     private void decode() throws IOException {

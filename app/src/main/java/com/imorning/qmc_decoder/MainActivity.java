@@ -1,17 +1,12 @@
 package com.imorning.qmc_decoder;
 
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.util.Log;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-
-import com.hjq.permissions.Permission;
-import com.hjq.permissions.XXPermissions;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -36,9 +31,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         qmcListView = findViewById(R.id.songList);
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
-            requestPermission();
-        }
         List<Map<String, Object>> list = new ArrayList<>();
         File file = new File(qmcPath);
         if (!file.exists())
@@ -82,22 +74,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void requestPermission() {
-        String[] permissionList;
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.Q) {
-            permissionList = new String[]{Permission.MANAGE_EXTERNAL_STORAGE};
-        } else {
-            permissionList = Permission.Group.STORAGE;
-        }
-        XXPermissions.with(MainActivity.this)
-                .permission(permissionList)
-                .request((permissions, all) -> {
-                    if (!all) {
-                        Toast.makeText(getApplicationContext(), "请授权app权限，否则无法正常运行！", Toast.LENGTH_LONG).show();
-                    }
-                });
-    }
-
     private void decode(File file) {
         String filePath = file.getAbsolutePath();
         try {
@@ -131,6 +107,8 @@ public class MainActivity extends AppCompatActivity {
             System.err.printf("\"%s\" error: %s%n", filePath, ex.getMessage());
             ex.printStackTrace();
         }
-        new Decoder(in, out).exe();
+        Decoder decoder = new Decoder(in, out);
+        decoder.exe();
+        Toast.makeText(getApplicationContext(), String.format("已保存在\n%s", decoder.getOutputPath()), Toast.LENGTH_LONG).show();
     }
 }
