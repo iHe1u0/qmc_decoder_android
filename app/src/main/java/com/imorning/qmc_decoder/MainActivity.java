@@ -24,13 +24,12 @@ public class MainActivity extends AppCompatActivity {
 
     private final String qmcPath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/qqmusic/song/";
     private String in, out;
-    private ListView qmcListView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        qmcListView = findViewById(R.id.songList);
+        ListView qmcListView = findViewById(R.id.songList);
         List<Map<String, Object>> list = new ArrayList<>();
         File file = new File(qmcPath);
         if (!file.exists())
