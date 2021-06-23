@@ -2,6 +2,7 @@ package com.imorning.qmc_decoder;
 
 import android.os.Bundle;
 import android.os.Environment;
+import android.util.Log;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.Toast;
@@ -32,9 +33,11 @@ public class MainActivity extends AppCompatActivity {
         ListView qmcListView = findViewById(R.id.songList);
         List<Map<String, Object>> list = new ArrayList<>();
         File file = new File(qmcPath);
-        if (!file.exists())
+        if (!file.exists()) {
+            Toast.makeText(getApplicationContext(), "error in path:" + qmcPath, Toast.LENGTH_LONG).show();
             return;
-        if (Objects.requireNonNull(file.list()).length > 1) {
+        }
+        if (Objects.requireNonNull(file.list()).length > 0) {
             for (File allFile : Objects.requireNonNull(file.listFiles())) {
                 if (isQmcFile(allFile)) {
                     Map<String, Object> map = new HashMap<>();
@@ -43,6 +46,9 @@ public class MainActivity extends AppCompatActivity {
                     list.add(map);
                 }
             }
+        }
+        if (list.size() == 0) {
+            Toast.makeText(getApplicationContext(), "未扫描出qq音乐下载文件～", Toast.LENGTH_LONG).show();
         }
         SimpleAdapter sa = new SimpleAdapter(MainActivity.this, list, R.layout.file_item, new String[]{"name"}, new int[]{R.id.file_item_tv});
         qmcListView.setAdapter(sa);
@@ -53,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private boolean isQmcFile(File unknown_file) {
+        //Log.d(TAG, unknown_file.getAbsolutePath());
         if (!unknown_file.isFile()) {
             return false;
         }
