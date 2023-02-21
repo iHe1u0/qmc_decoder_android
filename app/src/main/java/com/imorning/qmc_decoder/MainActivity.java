@@ -2,7 +2,6 @@ package com.imorning.qmc_decoder;
 
 import android.os.Bundle;
 import android.os.Environment;
-import android.util.Log;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.Toast;
@@ -17,7 +16,8 @@ import java.util.Map;
 import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
-    private static final String TAG = "MainActivity.Song";
+
+    private static final String TAG = "MainActivity";
 
     static {
         System.loadLibrary("main");
@@ -33,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
         ListView qmcListView = findViewById(R.id.songList);
         List<Map<String, Object>> list = new ArrayList<>();
         File file = new File(qmcPath);
-        if (!file.exists()) {
+        if (!file.exists() || file.list() == null) {
             Toast.makeText(getApplicationContext(), "error in path:" + qmcPath, Toast.LENGTH_LONG).show();
             return;
         }
@@ -59,7 +59,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private boolean isQmcFile(File unknown_file) {
-        //Log.d(TAG, unknown_file.getAbsolutePath());
         if (!unknown_file.isFile()) {
             return false;
         }
@@ -74,6 +73,7 @@ public class MainActivity extends AppCompatActivity {
             case ".qmc3":
             case ".qmcogg":
             case ".qmcflac":
+            case ".mgg2":
                 return true;
             default:
                 return false;
@@ -108,13 +108,15 @@ public class MainActivity extends AppCompatActivity {
                 case ".qmcflac":
                     out = inputName + ".flac";
                     break;
+                default:
+                    out = in + "_decode.mp3";
             }
         } catch (Exception ex) {
             System.err.printf("\"%s\" error: %s%n", filePath, ex.getMessage());
             ex.printStackTrace();
         }
         Decoder decoder = new Decoder(in, out);
-        decoder.exe();
+        decoder.execute();
         Toast.makeText(getApplicationContext(), String.format("已保存在\n%s", decoder.getOutputPath()), Toast.LENGTH_LONG).show();
     }
 }

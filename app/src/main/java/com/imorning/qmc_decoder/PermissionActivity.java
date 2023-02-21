@@ -1,5 +1,7 @@
 package com.imorning.qmc_decoder;
 
+import static com.hjq.permissions.Permission.MANAGE_EXTERNAL_STORAGE;
+
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Build;
@@ -28,10 +30,11 @@ public class PermissionActivity extends AppCompatActivity {
     }
 
     private void requestPermission() {
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.Q) {
-            permissionList = new String[]{Permission.MANAGE_EXTERNAL_STORAGE};
-        } else {
+
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q) {
             permissionList = Permission.Group.STORAGE;
+        } else {
+            permissionList = new String[]{MANAGE_EXTERNAL_STORAGE};
         }
         XXPermissions.with(PermissionActivity.this)
                 .permission(permissionList)
@@ -48,12 +51,8 @@ public class PermissionActivity extends AppCompatActivity {
         new AlertDialog.Builder(PermissionActivity.this)
                 .setMessage("请授权app权限，否则无法正常运行！")
                 .setCancelable(false)
-                .setPositiveButton("确定", (dialog, which) -> {
-                    XXPermissions.startPermissionActivity(PermissionActivity.this, permissions);
-                })
-                .setNegativeButton(android.R.string.cancel, (dialog, which) -> {
-                    finish();
-                })
+                .setPositiveButton("确定", (dialog, which) -> XXPermissions.startPermissionActivity(PermissionActivity.this, permissions))
+                .setNegativeButton(android.R.string.cancel, (dialog, which) -> finish())
                 .create().show();
     }
 
